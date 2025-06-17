@@ -40,7 +40,7 @@ Find out what arguments are supported
 
 ```
 python3.11 main.py -h                               
-usage: main.py [-h] [sourcePath] [outputPath] [skipFrames] [resHorizontal] [resVertical]
+usage: main.py [-h] [sourcePath] [outputPath] [skipFrames] [resHorizontal] [resVertical] [outputCsvPath] [confidenceLimit]
 
 License Plate Scanner
 
@@ -50,16 +50,19 @@ positional arguments:
   skipFrames
   resHorizontal
   resVertical
+  outputCsvPath
+  confidenceLimit
+
 
 options:
   -h, --help     show this help message and exit
 ```
 
-Example for no frame skipping with 1280x960 resolution (resampled to)
+Example for no frame skipping with 1280x960 resolution (resampled to) and output text if confidence above 0.3
 
 
 ```
-python3.11 main.py input.mp4 output2.mp4 1 1280 960
+python3.11 main.py input.mp4 output2.mp4 1 1280 960 output.csv 0.3
 ```
 
 When using with no args you'll have to make sure path is found and so on

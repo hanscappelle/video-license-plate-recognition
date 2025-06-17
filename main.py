@@ -12,6 +12,8 @@ parser.add_argument("outputPath", nargs='?', default="output.mp4")
 parser.add_argument("skipFrames", nargs='?', type=int, default="1")
 parser.add_argument("resHorizontal", nargs='?', type=int, default="640")
 parser.add_argument("resVertical", nargs='?', type=int, default="480")
+parser.add_argument("outputCsvPath", nargs='?', default="output.csv")
+parser.add_argument("confidenceLimit", nargs='?', type=float, default="0.1")
 
 args=parser.parse_args()
 
@@ -103,7 +105,8 @@ while cap.isOpened():
 
                 # collect results
                 if( not np.isnan(number_conf) ):
-                    plates.append([frame_count, concat_number, f"{number_conf:.2f}"])
+                    if ( number_conf > args.confidenceLimit ):
+                        plates.append([frame_count, concat_number, f"{number_conf:.2f}"])
 
             except Exception as e:
                 print(f"OCR Error: {e}")
@@ -124,7 +127,7 @@ while cap.isOpened():
 
 # for text (csv) based output
 import csv
-with open('output.csv', 'w', newline='') as csvfile:
+with open(args.outputCsvPath, 'w', newline='') as csvfile:
     csvwriter = csv.writer(csvfile, delimiter=',')#, quotechar='', quoting=csv.QUOTE_MINIMAL)
     # create some heading
     csvwriter.writerow(["Video Frame","License Plate","Confidence"])
