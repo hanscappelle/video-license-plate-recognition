@@ -37,6 +37,9 @@ out = cv2.VideoWriter(output_path, fourcc, 30.0, (resHorizontal, resVertical))  
 frame_skip = args.skipFrames #3 # Skip every 3rd frame
 frame_count = 0
 
+# collect results
+plates = []
+
 while cap.isOpened():
     ret, frame = cap.read()  # Read a frame from the video
     if not ret:
@@ -98,6 +101,9 @@ while cap.isOpened():
                     thickness=2
                 )
 
+                # collect results
+                plates.append([frame_count, concat_number, f"{number_conf:.2f}"])
+
             except Exception as e:
                 print(f"OCR Error: {e}")
                 pass
@@ -112,7 +118,17 @@ while cap.isOpened():
         break  # Exit loop if 'q' is pressed
 
     frame_count += 1  # Increment frame count
-    
+
+# csv output
+
+# for text (csv) based output
+import csv
+with open('output.csv', 'w', newline='') as csvfile:
+    csvwriter = csv.writer(csvfile, delimiter=',')#, quotechar='', quoting=csv.QUOTE_MINIMAL)
+    # create some heading
+    csvwriter.writerow(["Video Frame","License Plate","Confidence"])
+    csvwriter.writerows(plates)
+
 # Release resources
 cap.release()
 out.release()  # Release the VideoWriter object if used
