@@ -85,8 +85,12 @@ Progress: |███████████████████████
 Progress: |██████████████████████████████████████████████████| 100.0% Complete% (venv) hcpl@Mac Video-LPR % 
 ```
 
+## Improvements
 
-# References
+* don't wait till the end to export csv
+* create a better model? Or test for better OCR
+
+## References
 
 Source for original version of this code found in this article (see _main.py in this project for reference): https://medium.com/@mahijain9211/license-plate-detection-from-video-files-using-yolo-and-easyocr-6b647f0c94d5
 
