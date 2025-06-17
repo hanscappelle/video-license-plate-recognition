@@ -95,7 +95,7 @@ while cap.isOpened():
                 # Draw the detected text on the frame
                 cv2.putText(
                     img=frame,
-                    text=f"Plate: {concat_number} ({number_conf:.2f})",
+                    text=f"[{concat_number}]({number_conf:.2f})",
                     org=(r0, r1 - 10),
                     fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=0.7,
