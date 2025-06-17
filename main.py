@@ -102,7 +102,8 @@ while cap.isOpened():
                 )
 
                 # collect results
-                plates.append([frame_count, concat_number, f"{number_conf:.2f}"])
+                if( not np.isnan(number_conf) ):
+                    plates.append([frame_count, concat_number, f"{number_conf:.2f}"])
 
             except Exception as e:
                 print(f"OCR Error: {e}")
