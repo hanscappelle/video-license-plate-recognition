@@ -29,12 +29,12 @@ cap = cv2.VideoCapture(video_path)
 # Create a VideoWriter object (optional, if you want to save the output)
 output_path = args.outputPath #'output_video.mp4'
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-resHorizontal = args.resHorizontal # 640
-resVertical = args.resVertical # 480
+resHorizontal = args.resHorizontal #640
+resVertical = args.resVertical #480
 out = cv2.VideoWriter(output_path, fourcc, 30.0, (resHorizontal, resVertical))  # Adjust frame size if necessary
 
 # Frame skipping factor (adjust as needed for performance)
-frame_skip = args.skipFrames # 3 # Skip every 3rd frame
+frame_skip = args.skipFrames #3 # Skip every 3rd frame
 frame_count = 0
 
 while cap.isOpened():
