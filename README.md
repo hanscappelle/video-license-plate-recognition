@@ -3,6 +3,8 @@
 A python script that takes a video mp4 file as input and checks for license plates frame by frame
 resulting in outputting video with overlapped info and csv text file. 
 
+<img src="https://github.com/hanscappelle/video-license-plate-recognition/blob/main/Screenshot%202025-06-17%20at%2023.43.15.png"/>
+
 ## Install dependencies
 
 Instructions for using on a mac using Python3 installed with homebrew. 
