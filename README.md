@@ -109,3 +109,5 @@ https://github.com/wavelolz/Video-License-Plate-Recognition
 
 https://github.com/sveyek/Video-ANPR
 
+https://github.com/mendez-luisjose/License-Plate-Detection-with-YoloV8-and-EasyOCR
+
