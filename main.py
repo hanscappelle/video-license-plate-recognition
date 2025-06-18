@@ -3,6 +3,7 @@ from ultralytics import YOLO
 import easyocr
 from PIL import Image
 import numpy as np
+import os
 
 # added for arguments parsing 
 import argparse
@@ -14,8 +15,14 @@ parser.add_argument("resHorizontal", nargs='?', type=int, default="640")
 parser.add_argument("resVertical", nargs='?', type=int, default="480")
 parser.add_argument("outputCsvPath", nargs='?', default="output.csv")
 parser.add_argument("confidenceLimit", nargs='?', type=float, default="0.1")
+parser.add_argument("writeFrames", nargs='?', type=int, default="0")
+parser.add_argument("writeFramesFolder", nargs='?', default="output-frames")
 
 args=parser.parse_args()
+
+# create output folder when needed
+if (args.writeFrames == 1 and not os.path.exists(args.writeFramesFolder)):
+    os.makedirs(args.writeFramesFolder)
 
 # Initialize EasyOCR reader
 reader = easyocr.Reader(['en'], gpu=False)
@@ -107,10 +114,13 @@ while cap.isOpened():
                     thickness=2
                 )
 
-                # collect results
-                if( not np.isnan(number_conf) ):
-                    if ( number_conf > args.confidenceLimit ):
-                        plates.append([frame_count, concat_number, f"{number_conf:.2f}"])
+                # OPTION: collect results
+                if( not np.isnan(number_conf) and number_conf > args.confidenceLimit ):
+                    plates.append([frame_count, concat_number, f"{number_conf:.2f}"])
+
+                # OPTION: also store frames with detection as image
+                if( args.writeFrames and number_conf > args.confidenceLimit ):
+                    cv2.imwrite(f"{args.writeFramesFolder}/frame-{frame_count}.JPG", frame)
 
             except Exception as e:
                 print(f"OCR Error: {e}")
@@ -129,7 +139,7 @@ while cap.isOpened():
 
 # csv output
 
-# for text (csv) based output
+# OPTION: for text (csv) based output
 import csv
 with open(args.outputCsvPath, 'w', newline='') as csvfile:
     csvwriter = csv.writer(csvfile, delimiter=',')#, quotechar='', quoting=csv.QUOTE_MINIMAL)

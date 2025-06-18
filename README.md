@@ -81,7 +81,6 @@ Progress: |███████████████████████
 * don't wait till the end to export csv text based results
 * create a better model? Or test for better OCR options
 * it probably doesn't help that my source video was anamorphic and desqueezed
-* also grab the frame?
 
 ### Done
 
@@ -91,7 +90,7 @@ Progress: |███████████████████████
   allowlist (string) - Force EasyOCR to recognize only subset of characters. Useful for specific problem (E.g. license plate, etc.)
   from https://www.jaided.ai/easyocr/documentation/
   0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
-
+* also write detected frames https://roboflow.com/use-opencv/save-an-image-with-imwrite
 
 ## References
 
