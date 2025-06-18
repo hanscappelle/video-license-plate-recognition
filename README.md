@@ -96,7 +96,8 @@ Limit processing to recognized rectangles, for that the included model works wel
 ## Improvements
 
 * don't wait till the end to export csv text based results
-* create a better model? Or test for better OCR options
+* create a better model? That seems OK with the plates being recognized
+* or test for better OCR options, limited done but better trained model maybe?
 * it probably doesn't help that my source video was anamorphic and desqueezed
 
 ### Done
