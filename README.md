@@ -40,30 +40,32 @@ pip3.11 install easyocr
 Find out what arguments are supported:
 
 ```
-python3.11 main.py -h                               
-usage: main.py [-h] [sourcePath] [outputPath] [skipFrames] [resHorizontal] [resVertical] [outputCsvPath] [confidenceLimit]
+hanscappelle@Macmini video-license-plate-recognition % python3.11 main.py -h                                
+usage: main.py [-h] [sourcePath] [outputPath] [writeFrames] [confidenceLimit] [skipFrames] [resHorizontal] [resVertical] [outVideoFile] [outCsvFile]
 
 License Plate Scanner
 
 positional arguments:
   sourcePath
   outputPath
+  writeFrames
+  confidenceLimit
   skipFrames
   resHorizontal
   resVertical
-  outputCsvPath
-  confidenceLimit
-
+  outVideoFile
+  outCsvFile
 
 options:
-  -h, --help     show this help message and exit
+  -h, --help       show this help message and exit
+
 ```
 
-Example for no frame skipping working with a downsampled video in 1280x960 resolution 
+Example for skipping every 3 frames working with a downsampled video in 1280x960 resolution 
 and output text only if confidence is above 0.3.
 
 ```
-python3.11 main.py input.mp4 output.mp4 1 1280 960 output.csv 0.3
+python3.11 main.py input.mp4 output 0 0.3 3 1280 960
 ```
 
 Example output running above command
@@ -74,6 +76,21 @@ Using CPU. Note: This module is much faster with a GPU.
 Downloading detection model, please wait. This may take several minutes depending upon your network connection.
 Progress: |██████████████████████████████████████████████████| 100.0% CompleteDownloading recognition model, please wait. This may take several minutes depending upon your network connection.
 Progress: |██████████████████████████████████████████████████| 100.0% Complete% (venv) hcpl@Mac Video-LPR % 
+```
+
+## Performance
+
+I'm working on a Mac so I have no GPU support enabled. Change that in the code to improve performance. 
+
+Frame skipping can be used to reduce the total number of frames of the video that should be processed. 
+For example setting 3 will jump over and process only every 3 frames of the video.
+
+Video frame size can be reduced to speed up the OCR per frame. For example a 4K video with original
+resolution of 3840 * 2160 can be processed as a (3840/3=) 1280 * (2160/3=) 720.
+
+Limit processing to recognized rectangles, for that the included model works well:
+```
+./models/license_plate_detector.pt
 ```
 
 ## Improvements

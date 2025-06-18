@@ -9,20 +9,20 @@ import os
 import argparse
 parser=argparse.ArgumentParser(description="License Plate Scanner")
 parser.add_argument("sourcePath", nargs='?', default="input.mp4")
-parser.add_argument("outputPath", nargs='?', default="output.mp4")
+parser.add_argument("outputPath", nargs='?', default="output-frames")
+parser.add_argument("writeFrames", nargs='?', type=int, default="0")
+parser.add_argument("confidenceLimit", nargs='?', type=float, default="0.1")
 parser.add_argument("skipFrames", nargs='?', type=int, default="1")
 parser.add_argument("resHorizontal", nargs='?', type=int, default="640")
 parser.add_argument("resVertical", nargs='?', type=int, default="480")
-parser.add_argument("outputCsvPath", nargs='?', default="output.csv")
-parser.add_argument("confidenceLimit", nargs='?', type=float, default="0.1")
-parser.add_argument("writeFrames", nargs='?', type=int, default="0")
-parser.add_argument("writeFramesFolder", nargs='?', default="output-frames")
+parser.add_argument("outVideoFile", nargs='?', default="output.mp4")
+parser.add_argument("outCsvFile", nargs='?', default="output.csv")
 
 args=parser.parse_args()
 
 # create output folder when needed
-if (args.writeFrames == 1 and not os.path.exists(args.writeFramesFolder)):
-    os.makedirs(args.writeFramesFolder)
+if (args.writeFrames == 1 and not os.path.exists(args.outputPath)):
+    os.makedirs(args.outputPath)
 
 # Initialize EasyOCR reader
 reader = easyocr.Reader(['en'], gpu=False)
@@ -38,7 +38,7 @@ video_path = args.sourcePath #'input.mp4'
 cap = cv2.VideoCapture(video_path)
 
 # Create a VideoWriter object (optional, if you want to save the output)
-output_path = args.outputPath #'output_video.mp4'
+output_path = f"{args.outputPath}/{args.outVideoFile}" #'output_video.mp4'
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 resHorizontal = args.resHorizontal #640
 resVertical = args.resVertical #480
@@ -120,7 +120,7 @@ while cap.isOpened():
 
                 # OPTION: also store frames with detection as image
                 if( args.writeFrames and number_conf > args.confidenceLimit ):
-                    cv2.imwrite(f"{args.writeFramesFolder}/frame-{frame_count}.JPG", frame)
+                    cv2.imwrite(f"{args.outputPath}/frame-{frame_count}.JPG", frame)
 
             except Exception as e:
                 print(f"OCR Error: {e}")
@@ -141,7 +141,7 @@ while cap.isOpened():
 
 # OPTION: for text (csv) based output
 import csv
-with open(args.outputCsvPath, 'w', newline='') as csvfile:
+with open(f"{args.outputPath}/{args.outCsvFile}", 'w', newline='') as csvfile:
     csvwriter = csv.writer(csvfile, delimiter=',')#, quotechar='', quoting=csv.QUOTE_MINIMAL)
     # create some heading
     csvwriter.writerow(["Video Frame","License Plate","Confidence"])
