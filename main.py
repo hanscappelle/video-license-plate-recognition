@@ -21,7 +21,9 @@ args=parser.parse_args()
 reader = easyocr.Reader(['en'], gpu=False)
 
 # Load your YOLO model (replace with your model's path)
+# very common model will slow down processing and recognize everything, not just plates
 #model = YOLO('./models/yolov8n.pt', task='detect')
+# license plate specific model
 model = YOLO('./models/license_plate_detector.pt', task='detect')
 
 # Open the video file (replace with your video file path)
@@ -87,8 +89,10 @@ while cap.isOpened():
                 plate_image = Image.fromarray(cv2.cvtColor(plate_region, cv2.COLOR_BGR2RGB))
                 plate_array = np.array(plate_image)
 
-                # Use EasyOCR to read text from plate
-                plate_number = reader.readtext(plate_array)
+                # Use EasyOCR to read text from plate, no limit on characters
+                #plate_number = reader.readtext(plate_array)
+                # using allowlist to limit characters in output
+                plate_number = reader.readtext(plate_array, allowlist="0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ")
                 concat_number = ' '.join([number[1] for number in plate_number])
                 number_conf = np.mean([number[2] for number in plate_number])
 

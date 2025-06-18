@@ -80,11 +80,18 @@ Progress: |███████████████████████
 
 * don't wait till the end to export csv text based results
 * create a better model? Or test for better OCR options
-* try limiting to allowed characters with
-    allowlist (string) - Force EasyOCR to recognize only subset of characters. Useful for specific problem (E.g. license plate, etc.)
-    from https://www.jaided.ai/easyocr/documentation/
-    0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
 * it probably doesn't help that my source video was anamorphic and desqueezed
+* also grab the frame?
+
+### Done
+
+* add parameters for more options
+* also output text based in CSV format
+* limiting to allowed characters with
+  allowlist (string) - Force EasyOCR to recognize only subset of characters. Useful for specific problem (E.g. license plate, etc.)
+  from https://www.jaided.ai/easyocr/documentation/
+  0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
+
 
 ## References
 
