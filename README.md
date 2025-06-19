@@ -162,7 +162,9 @@ https://github.com/sveyek/Video-ANPR
 Adapted script to receive command line arguments using this info:
 https://www.tutorialspoint.com/python/python_command_line_arguments.htm
 
-And added some extra output besides the video.
+https://medium.com/@adityamahajan.work/easyocr-a-comprehensive-guide-5ff1cb850168
+
+https://medium.com/analytics-vidhya/ocr-corrector-in-regex-extraction-6d2af0d92dc
 
 ## Alternative implementations
 
