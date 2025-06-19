@@ -1,4 +1,4 @@
-# Video License Plate Recognition with
+# Video License Plate Recognition
 
 A python script that takes a video mp4 file as input and checks for license plates frame by frame
 resulting in video output with text based info overlay and a CSV text file. 
@@ -80,17 +80,56 @@ Progress: |███████████████████████
 
 ## Performance
 
-I'm working on a Mac so I have no GPU support enabled. Change that in the code to improve performance. 
+### Speed
+
+I'm working on a Mac so I have no GPU support enabled. Change that in code to improve performance. 
 
 Frame skipping can be used to reduce the total number of frames of the video that should be processed. 
-For example setting 3 will jump over and process only every 3 frames of the video.
+For example setting this to 3 will jump over and process only every 3 frames of the video.
 
-Video frame size can be reduced to speed up the OCR per frame. For example a 4K video with original
-resolution of 3840 * 2160 can be processed as a (3840/3=) 1280 * (2160/3=) 720.
+Limited processing to recognized rectangles is a must for speed and performance, otherwise opencv
+will detect all objects it finds on the road and even categorise like cars, trucks, ...
 
-Limit processing to recognized rectangles, for that the included model works well:
+For that the included model works well:
 ```
 ./models/license_plate_detector.pt
+```
+
+Video frame size can be reduced to speed up OCR per frame. For example a 4K video with original
+resolution of 3840 * 2160 can be processed as a (3840/3=) 1280 * (2160/3=) 720.
+
+### Precision
+
+However reducing frame size I did see a big decrease in correctly recognized license plates. The 
+rectangles are still found but the OCR part suffers. For example from that same 4K image source
+of original 3840x2160 size the full size image results in these (not complete):
+
+```
+Video Frame,License Plate,Confidence
+165,  2-EXH-885,  0.41
+177,  2EX885,     0.54
+234,  24FK-92,    0.40
+237,  2-FV-92,    0.47
+243,  24,         0.78
+294,  LD-401,     0.49
+300,  2-AUD-41,   0.84
+306,  2-AUD-40,   0.63
+309,  2-AUD-401,  0.96
+```
+
+While the same first hits for the video when size was reduced by 1/3 (see prev) looks like this:
+
+```
+Video Frame,License Plate,Confidence
+21,   1 RDB 459,    0.88
+24,   1 RDB L59,    0.53
+27,   1 RDB 459,    0.87
+30,   1 RDB 159,    0.71
+33,   RDB 653,      0.56
+66,   2 AFL 743,    0.96
+69,   4FL 743,      0.63
+135,  2PEGK 73,     0.98
+138,  2EEGK 731,    0.63
 ```
 
 ## Improvements
