@@ -86,7 +86,7 @@ Progress: |███████████████████████
 ## Troubleshooting
 
 Most common issues:
-- using a non compatible Python version, stick to a version withing the `3.9-11` range 
+- using a non compatible Python version, stick to a version within the `3.9-11` range 
 - swapped arguments, double check the order of arguments using the help option `-h`
 - using cpu instead of gpu will slow down performance
 
@@ -149,7 +149,7 @@ Video Frame,License Plate,Confidence
 
 * don't wait till the end to export csv text based results
 * improve models? For license plate and for OCR (seem to perform OK)
-* it probably doesn't help that my source video was anamorphic and desqueezed
+* better way of confiugration needed, order of parameters is confusing
 
 ### Done
 
@@ -162,6 +162,8 @@ Video Frame,License Plate,Confidence
 * also write detected frames https://roboflow.com/use-opencv/save-an-image-with-imwrite
 * use original frame size by default
 * optional 180 degrees rotation option
+* it probably doesn't help that my source video was anamorphic and desqueezed, tested with normal lens & 5K, 
+  5K resolution is overkill, you'll achieve better results getting closer to the license plates instead
 
 ## References
 
