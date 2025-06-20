@@ -139,7 +139,7 @@ while cap.isOpened():
                     plates.append([frame_count, concat_number, f"{number_conf:.2f}"])
 
                 # OPTION: also store frames with detection as image
-                if( args.exportFrames and number_conf > args.confidenceLimit ):
+                if( args.exportFrames == 1 and number_conf > args.confidenceLimit ):
                     cv2.imwrite(f"{args.outputPath}/frame-{frame_count}.JPG", frame)
 
             except Exception as e:
@@ -161,7 +161,9 @@ while cap.isOpened():
 
 # OPTION: for text (csv) based output
 import csv
-with open(f"{args.outputPath}/{args.outCsvFile}", 'w', newline='') as csvfile:
+outputCsvFile = f'{args.outputPath}/{args.outCsvFile}'
+with open(outputCsvFile, 'w', newline='') as csvfile:
+    print(f'writing text based output to {outputCsvFile}')
     csvwriter = csv.writer(csvfile, delimiter=',')#, quotechar='', quoting=csv.QUOTE_MINIMAL)
     # create some heading
     csvwriter.writerow(["Video Frame","License Plate","Confidence"])
