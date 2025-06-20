@@ -53,7 +53,7 @@ if resHorizontal == 0 or resVertical == 0:
     print(f'found frame size {resHorizontal} x {resVertical}')
 
 # Create a VideoWriter object (optional, if you want to save the output)
-output_path = f"{args.outputPath}/{args.outVideoFile}" #'output_video.mp4'
+output_path = f'{args.outputPath}/{args.outVideoFile}' #'output_video.mp4'
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 out = cv2.VideoWriter(output_path, fourcc, 30.0, (resHorizontal, resVertical))  # Adjust frame size if necessary
 print(f'writing output video to {output_path}')
@@ -157,8 +157,6 @@ while cap.isOpened():
         break  # Exit loop if 'q' is pressed
 
     frame_count += 1  # Increment frame count
-
-# csv output
 
 # OPTION: for text (csv) based output
 import csv
