@@ -35,6 +35,11 @@ pip3.11 install ultralytics
 pip3.11 install easyocr
 ```
 
+Optional step for mac install metal for gpu support
+```
+pip3.11 install tensorflow-metal
+```
+
 ## Execute this code
 
 Find out what arguments are supported:
@@ -81,14 +86,16 @@ Progress: |███████████████████████
 ## Troubleshooting
 
 Most common issues:
-- using a non compatible Python version, stick to a version withing the `3.9-11` range. 
+- using a non compatible Python version, stick to a version withing the `3.9-11` range 
 - swapped arguments, double check the order of arguments using the help option `-h`
+- using cpu instead of gpu will slow down performance
 
 ## Performance
 
 ### Speed
 
-I'm working on a Mac so I have no GPU support enabled. Change that in code to improve performance. 
+I'm working on a Mac M1 myself so for GPU support to be enabled I had to install tensorflow-metal. 
+You can force gpu or cpu in code if needed.  
 
 Frame skipping can be used to reduce the total number of frames of the video that should be processed. 
 For example setting this to 3 will jump over and process only every 3 frames of the video.

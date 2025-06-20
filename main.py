@@ -26,7 +26,8 @@ if not os.path.exists(args.outputPath):
     os.makedirs(args.outputPath)
 
 # Initialize EasyOCR reader
-reader = easyocr.Reader(['en'], gpu=False)
+# on mac you can use gpu support after installing tensorflow-metal
+reader = easyocr.Reader(['en'])#, gpu=False)
 
 # Load your YOLO model (replace with your model's path)
 # very common model will slow down processing and recognize everything, not just plates
