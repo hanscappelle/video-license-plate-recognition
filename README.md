@@ -78,6 +78,12 @@ Progress: |███████████████████████
 Progress: |██████████████████████████████████████████████████| 100.0% Complete% (venv) hcpl@Mac Video-LPR % 
 ```
 
+## Troubleshooting
+
+Most common issues:
+- using a non compatible Python version, stick to a version withing the `3.9-11` range. 
+- swapped arguments, double check the order of arguments using the help option `-h`
+
 ## Performance
 
 ### Speed
