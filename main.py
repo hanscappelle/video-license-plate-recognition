@@ -22,23 +22,23 @@ args=parser.parse_args()
 
 # create output folder when needed
 if not os.path.exists(args.outputPath):
-    print(f'output folder created {args.outputPath}')
+    print(f"output folder created {args.outputPath}")
     os.makedirs(args.outputPath)
 
 # Initialize EasyOCR reader
 # on mac you can use gpu support after installing tensorflow-metal
-reader = easyocr.Reader(['en'])#, gpu=False)
+reader = easyocr.Reader(["en"])#, gpu=False)
 
 # Load your YOLO model (replace with your model's path)
 # very common model will slow down processing and recognize everything, not just plates
-#model = YOLO('./models/yolov8n.pt', task='detect')
+#model = YOLO("./models/yolov8n.pt", task="detect")
 # license plate specific model
-modelPath = './models/license_plate_detector.pt'
-model = YOLO(modelPath, task='detect')
-print(f'using modelPath {modelPath}')
+modelPath = "./models/license_plate_detector.pt"
+model = YOLO(modelPath, task="detect")
+print(f"using modelPath {modelPath}")
 
 # Open the video file (replace with your video file path)
-video_path = args.sourceFile #'input.mp4'
+video_path = args.sourceFile #"input.mp4"
 cap = cv2.VideoCapture(video_path)
 
 # OPTIONAL: check if user has preferred dimensions set
@@ -46,22 +46,22 @@ resHorizontal = args.resHorizontal #640
 resVertical = args.resVertical #480
 shouldResize = 1
 if resHorizontal == 0 or resVertical == 0:
-    print(f'frame size was not set, using frame size of source video')
+    print(f"frame size was not set, using frame size of source video")
     resHorizontal = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) #cv2.cv.CV_CAP_PROP_FRAME_WIDTH)   # float `width`
     resVertical = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) #cv2.cv.CV_CAP_PROP_FRAME_HEIGHT)  # float `height`
     shouldResize = 0
-    print(f'found frame size {resHorizontal} x {resVertical}')
+    print(f"found frame size {resHorizontal} x {resVertical}")
 
 # Create a VideoWriter object (optional, if you want to save the output)
-output_path = f'{args.outputPath}/{args.outVideoFile}' #'output_video.mp4'
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+output_path = f"{args.outputPath}/{args.outVideoFile}" #"output_video.mp4"
+fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 out = cv2.VideoWriter(output_path, fourcc, 30.0, (resHorizontal, resVertical))  # Adjust frame size if necessary
-print(f'writing output video to {output_path}')
+print(f"writing output video to {output_path}")
 
 # Frame skipping factor (adjust as needed for performance)
 frame_skip = args.skipFrames #3 # Skip every 3rd frame
 frame_count = 0
-print(f'skipping every {args.skipFrames} frame')
+print(f"skipping every {args.skipFrames} frame")
 
 # collect results
 plates = []
@@ -148,7 +148,7 @@ while cap.isOpened():
                 pass
 
     # Show the frame with detections
-    cv2.imshow('Detections', frame)
+    cv2.imshow("Detections", frame)
 
     # Write the frame to the output video (optional)
     out.write(frame)
@@ -160,9 +160,9 @@ while cap.isOpened():
 
 # OPTION: for text (csv) based output
 import csv
-outputCsvFile = f'{args.outputPath}/{args.outCsvFile}'
+outputCsvFile = f"{args.outputPath}/{args.outCsvFile}"
 with open(outputCsvFile, 'w', newline='') as csvfile:
-    print(f'writing text based output to {outputCsvFile}')
+    print(f"writing text based output to {outputCsvFile}")
     csvwriter = csv.writer(csvfile, delimiter=',')#, quotechar='', quoting=csv.QUOTE_MINIMAL)
     # create some heading
     csvwriter.writerow(["Video Frame","License Plate","Confidence"])
