@@ -9,19 +9,20 @@ import os
 import argparse
 parser=argparse.ArgumentParser(description="License Plate Scanner")
 parser.add_argument("sourcePath", nargs='?', default="input.mp4")
-parser.add_argument("outputPath", nargs='?', default="output-frames")
-parser.add_argument("writeFrames", nargs='?', type=int, default="0")
-parser.add_argument("confidenceLimit", nargs='?', type=float, default="0.1")
+parser.add_argument("outputPath", nargs='?', default="output")
+parser.add_argument("rotate180", nargs='?', default="0")
+parser.add_argument("exportFrames", nargs='?', type=int, default="0")
 parser.add_argument("skipFrames", nargs='?', type=int, default="1")
-parser.add_argument("resHorizontal", nargs='?', type=int, default="640")
-parser.add_argument("resVertical", nargs='?', type=int, default="480")
+parser.add_argument("confidenceLimit", nargs='?', type=float, default="0.1")
+parser.add_argument("resHorizontal", nargs='?', type=int, default="0")
+parser.add_argument("resVertical", nargs='?', type=int, default="0")
 parser.add_argument("outVideoFile", nargs='?', default="output.mp4")
 parser.add_argument("outCsvFile", nargs='?', default="output.csv")
 
 args=parser.parse_args()
 
 # create output folder when needed
-if (args.writeFrames == 1 and not os.path.exists(args.outputPath)):
+if not os.path.exists(args.outputPath):
     os.makedirs(args.outputPath)
 
 # Initialize EasyOCR reader
@@ -37,11 +38,20 @@ model = YOLO('./models/license_plate_detector.pt', task='detect')
 video_path = args.sourcePath #'input.mp4'
 cap = cv2.VideoCapture(video_path)
 
+# OPTIONAL: check if user has preferred dimensions set
+resHorizontal = args.resHorizontal #640
+resVertical = args.resVertical #480
+shouldResize = 1
+if resHorizontal == 0 or resVertical == 0:
+    print(f'frame size was not set, using frame size of source video')
+    resHorizontal = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) #cv2.cv.CV_CAP_PROP_FRAME_WIDTH)   # float `width`
+    resVertical = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) #cv2.cv.CV_CAP_PROP_FRAME_HEIGHT)  # float `height`
+    shouldResize = 0
+    print(f'found frame size {resHorizontal} x {resVertical}')
+
 # Create a VideoWriter object (optional, if you want to save the output)
 output_path = f"{args.outputPath}/{args.outVideoFile}" #'output_video.mp4'
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-resHorizontal = args.resHorizontal #640
-resVertical = args.resVertical #480
 out = cv2.VideoWriter(output_path, fourcc, 30.0, (resHorizontal, resVertical))  # Adjust frame size if necessary
 
 # Frame skipping factor (adjust as needed for performance)
@@ -52,6 +62,7 @@ frame_count = 0
 plates = []
 
 while cap.isOpened():
+
     ret, frame = cap.read()  # Read a frame from the video
     if not ret:
         break  # Exit loop if there are no frames left
@@ -61,8 +72,13 @@ while cap.isOpened():
         frame_count += 1
         continue  # Skip processing this frame
 
-    # Resize the frame (optional, adjust size as needed)
-    frame = cv2.resize(frame, (resHorizontal, resVertical))  # Resize to 640x480
+    if shouldResize:
+        # Resize the frame (optional, adjust size as needed)
+        frame = cv2.resize(frame, (resHorizontal, resVertical))  # Resize to 640x480
+
+    if args.rotate180:
+        # Optional: rotate 180
+        frame = cv2.rotate(frame, cv2.ROTATE_180)
 
     # Make predictions on the current frame
     results = model.predict(source=frame)
@@ -119,7 +135,7 @@ while cap.isOpened():
                     plates.append([frame_count, concat_number, f"{number_conf:.2f}"])
 
                 # OPTION: also store frames with detection as image
-                if( args.writeFrames and number_conf > args.confidenceLimit ):
+                if( args.exportFrames and number_conf > args.confidenceLimit ):
                     cv2.imwrite(f"{args.outputPath}/frame-{frame_count}.JPG", frame)
 
             except Exception as e:
