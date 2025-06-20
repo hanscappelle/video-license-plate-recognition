@@ -8,7 +8,7 @@ import os
 # added for arguments parsing 
 import argparse
 parser=argparse.ArgumentParser(description="License Plate Scanner")
-parser.add_argument("sourcePath", nargs='?', default="input.mp4")
+parser.add_argument("sourceFile", nargs='?', default="input.mp4")
 parser.add_argument("outputPath", nargs='?', default="output")
 parser.add_argument("rotate180", nargs='?', type=int, default="0")
 parser.add_argument("skipFrames", nargs='?', type=int, default="1")
@@ -38,7 +38,7 @@ model = YOLO(modelPath, task='detect')
 print(f'using modelPath {modelPath}')
 
 # Open the video file (replace with your video file path)
-video_path = args.sourcePath #'input.mp4'
+video_path = args.sourceFile #'input.mp4'
 cap = cv2.VideoCapture(video_path)
 
 # OPTIONAL: check if user has preferred dimensions set

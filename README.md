@@ -46,12 +46,12 @@ Find out what arguments are supported:
 
 ```
 hcpl@Hanss-MacBook-Air video-license-plate-recognition % Python3.11 main.py -h
-usage: main.py [-h] [sourcePath] [outputPath] [rotate180] [skipFrames] [confidenceLimit] [exportFrames] [resHorizontal] [resVertical] [outVideoFile] [outCsvFile]
+usage: main.py [-h] [sourceFile] [outputPath] [rotate180] [skipFrames] [confidenceLimit] [exportFrames] [resHorizontal] [resVertical] [outVideoFile] [outCsvFile]
 
 License Plate Scanner
 
 positional arguments:
-  sourcePath        # source for original input video
+  sourceFile        # source for original input video
   outputPath        # path for output (csv, frame and overlay video output)
   rotate180         # 1 to rotate video 180d
   skipFrames        # the number of frames to skip 
