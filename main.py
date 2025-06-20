@@ -10,19 +10,19 @@ import argparse
 parser=argparse.ArgumentParser(description="License Plate Scanner")
 parser.add_argument("sourcePath", nargs='?', default="input.mp4")
 parser.add_argument("outputPath", nargs='?', default="output")
-parser.add_argument("rotate180", nargs='?', default="0")
-parser.add_argument("exportFrames", nargs='?', type=int, default="0")
+parser.add_argument("rotate180", nargs='?', type=int, default="0")
 parser.add_argument("skipFrames", nargs='?', type=int, default="1")
 parser.add_argument("confidenceLimit", nargs='?', type=float, default="0.1")
+parser.add_argument("exportFrames", nargs='?', type=int, default="0")
 parser.add_argument("resHorizontal", nargs='?', type=int, default="0")
 parser.add_argument("resVertical", nargs='?', type=int, default="0")
 parser.add_argument("outVideoFile", nargs='?', default="output.mp4")
 parser.add_argument("outCsvFile", nargs='?', default="output.csv")
-
 args=parser.parse_args()
 
 # create output folder when needed
 if not os.path.exists(args.outputPath):
+    print(f'output folder created {args.outputPath}')
     os.makedirs(args.outputPath)
 
 # Initialize EasyOCR reader
@@ -32,7 +32,9 @@ reader = easyocr.Reader(['en'], gpu=False)
 # very common model will slow down processing and recognize everything, not just plates
 #model = YOLO('./models/yolov8n.pt', task='detect')
 # license plate specific model
-model = YOLO('./models/license_plate_detector.pt', task='detect')
+modelPath = './models/license_plate_detector.pt'
+model = YOLO(modelPath, task='detect')
+print(f'using modelPath {modelPath}')
 
 # Open the video file (replace with your video file path)
 video_path = args.sourcePath #'input.mp4'
@@ -53,10 +55,12 @@ if resHorizontal == 0 or resVertical == 0:
 output_path = f"{args.outputPath}/{args.outVideoFile}" #'output_video.mp4'
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 out = cv2.VideoWriter(output_path, fourcc, 30.0, (resHorizontal, resVertical))  # Adjust frame size if necessary
+print(f'writing output video to {output_path}')
 
 # Frame skipping factor (adjust as needed for performance)
 frame_skip = args.skipFrames #3 # Skip every 3rd frame
 frame_count = 0
+print(f'skipping every {args.skipFrames} frame')
 
 # collect results
 plates = []
@@ -72,11 +76,11 @@ while cap.isOpened():
         frame_count += 1
         continue  # Skip processing this frame
 
-    if shouldResize:
+    if shouldResize == 1:
         # Resize the frame (optional, adjust size as needed)
         frame = cv2.resize(frame, (resHorizontal, resVertical))  # Resize to 640x480
 
-    if args.rotate180:
+    if args.rotate180 == 1:
         # Optional: rotate 180
         frame = cv2.rotate(frame, cv2.ROTATE_180)
 

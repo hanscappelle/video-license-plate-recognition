@@ -40,32 +40,32 @@ pip3.11 install easyocr
 Find out what arguments are supported:
 
 ```
-hanscappelle@Macmini video-license-plate-recognition % python3.11 main.py -h                                
-usage: main.py [-h] [sourcePath] [outputPath] [writeFrames] [confidenceLimit] [skipFrames] [resHorizontal] [resVertical] [outVideoFile] [outCsvFile]
+hcpl@Hanss-MacBook-Air video-license-plate-recognition % Python3.11 main.py -h
+usage: main.py [-h] [sourcePath] [outputPath] [rotate180] [skipFrames] [confidenceLimit] [exportFrames] [resHorizontal] [resVertical] [outVideoFile] [outCsvFile]
 
 License Plate Scanner
 
 positional arguments:
-  sourcePath
-  outputPath
-  writeFrames
-  confidenceLimit
-  skipFrames
-  resHorizontal
-  resVertical
-  outVideoFile
-  outCsvFile
+  sourcePath        # source for original input video
+  outputPath        # path for output (csv, frame and overlay video output)
+  rotate180         # 1 to rotate video 180d
+  skipFrames        # the number of frames to skip 
+  confidenceLimit   # confidence limit (0.0 - 1.0)
+  exportFrames      # 1 to export detected frames 
+  resHorizontal     # optional horizontal resolution for resize
+  resVertical       # optional vertical resolution for resize
+  outVideoFile      # output video name, defaults to output.mp4
+  outCsvFile        # output csv file name, defaults to output.csv
 
 options:
   -h, --help       show this help message and exit
-
 ```
 
 Example for skipping every 3 frames working with a downsampled video in 1280x960 resolution 
 and output text only if confidence is above 0.3.
 
 ```
-python3.11 main.py input.mp4 output 0 0.3 3 1280 960
+python3.11 main.py input.mp4 output 0 3 0.3 1 1280 960
 ```
 
 Example output running above command
@@ -147,6 +147,8 @@ Video Frame,License Plate,Confidence
   from https://www.jaided.ai/easyocr/documentation/
   0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
 * also write detected frames https://roboflow.com/use-opencv/save-an-image-with-imwrite
+* use original frame size by default
+* optional 180 degrees rotation option
 
 ## References
 
