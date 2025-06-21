@@ -4,9 +4,10 @@ import easyocr
 from PIL import Image
 import numpy as np
 import os
-
-# added for arguments parsing 
 import argparse
+import csv
+
+# added for arguments parsing
 parser=argparse.ArgumentParser(description="License Plate Scanner")
 parser.add_argument("sourceFile", nargs='?', default="input.mp4")
 parser.add_argument("outputPath", nargs='?', default="output")
@@ -22,7 +23,7 @@ args=parser.parse_args()
 
 # create output folder when needed
 if not os.path.exists(args.outputPath):
-    print(f"output folder created {args.outputPath}")
+    print(f"OUTPUT: output folder created {args.outputPath}")
     os.makedirs(args.outputPath)
 
 # Initialize EasyOCR reader
@@ -35,7 +36,7 @@ reader = easyocr.Reader(["en"])#, gpu=False)
 # license plate specific model
 modelPath = "./models/license_plate_detector.pt"
 model = YOLO(modelPath, task="detect")
-print(f"using modelPath {modelPath}")
+print(f"DETECTION: using modelPath {modelPath}")
 
 # Open the video file (replace with your video file path)
 video_path = args.sourceFile #"input.mp4"
@@ -46,22 +47,30 @@ resHorizontal = args.resHorizontal #640
 resVertical = args.resVertical #480
 shouldResize = 1
 if resHorizontal == 0 or resVertical == 0:
-    print(f"frame size was not set, using frame size of source video")
+    print(f"VIDEO: frame size was not set, using frame size of source video")
     resHorizontal = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) #cv2.cv.CV_CAP_PROP_FRAME_WIDTH)   # float `width`
     resVertical = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) #cv2.cv.CV_CAP_PROP_FRAME_HEIGHT)  # float `height`
     shouldResize = 0
-    print(f"found frame size {resHorizontal} x {resVertical}")
+    print(f"VIDEO: found frame size {resHorizontal} x {resVertical}")
 
 # Create a VideoWriter object (optional, if you want to save the output)
 output_path = f"{args.outputPath}/{args.outVideoFile}" #"output_video.mp4"
 fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 out = cv2.VideoWriter(output_path, fourcc, 30.0, (resHorizontal, resVertical))  # Adjust frame size if necessary
-print(f"writing output video to {output_path}")
+print(f"OUTPUT: writing output video to {output_path}")
+
+# get total frame count of video for progress indication
+fps = cap.get(cv2.CAP_PROP_FPS)      # OpenCV v2.x used "CV_CAP_PROP_FPS"
+total_frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+total_duration = total_frame_count/fps
+print(f"VIDEO: total frame count {total_frame_count} at {fps} fps results in duration of {total_duration} seconds")
 
 # Frame skipping factor (adjust as needed for performance)
 frame_skip = args.skipFrames #3 # Skip every 3rd frame
+
 frame_count = 0
-print(f"skipping every {args.skipFrames} frame")
+if frame_skip > 1:
+    print(f"VIDEO: skipping every {args.skipFrames} frames")
 
 # collect results
 plates = []
@@ -144,7 +153,7 @@ while cap.isOpened():
                     cv2.imwrite(f"{args.outputPath}/frame-{frame_count}.JPG", frame)
 
             except Exception as e:
-                print(f"OCR Error: {e}")
+                print(f"OCR: Error: {e}")
                 pass
 
     # Show the frame with detections
@@ -159,10 +168,9 @@ while cap.isOpened():
     frame_count += 1  # Increment frame count
 
 # OPTION: for text (csv) based output
-import csv
 outputCsvFile = f"{args.outputPath}/{args.outCsvFile}"
 with open(outputCsvFile, 'w', newline='') as csvfile:
-    print(f"writing text based output to {outputCsvFile}")
+    print(f"OUTPUT: writing text based output to {outputCsvFile}")
     csvwriter = csv.writer(csvfile, delimiter=',')#, quotechar='', quoting=csv.QUOTE_MINIMAL)
     # create some heading
     csvwriter.writerow(["Video Frame","License Plate","Confidence"])

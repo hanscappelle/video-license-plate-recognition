@@ -147,6 +147,8 @@ Video Frame,License Plate,Confidence
 
 ## Improvements
 
+* show progress in output instead
+* option to start at a frame
 * don't wait till the end to export csv text based results
 * improve models? For license plate and for OCR (seem to perform OK)
 * better way of confiugration needed, order of parameters is confusing
