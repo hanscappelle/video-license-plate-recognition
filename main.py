@@ -81,6 +81,8 @@ while cap.isOpened():
     if not ret:
         break  # Exit loop if there are no frames left
 
+    print(f"DETECTION: handle frame of frames {frame_count}/{total_frame_count}")
+
     # Skip frames
     if frame_count % frame_skip != 0:
         frame_count += 1
