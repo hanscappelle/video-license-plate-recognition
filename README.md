@@ -147,11 +147,11 @@ Video Frame,License Plate,Confidence
 
 ## Improvements
 
-* show progress in output instead
-* option to start at a frame
-* don't wait till the end to export csv text based results
+* => show progress in output (instead), frame X of Y
+* option to start at a specific frame to resume processing
+* => don't wait till the end to export csv text based results
 * improve models? For license plate and for OCR (seem to perform OK)
-* better way of confiugration needed, order of parameters is confusing
+* better way of configuration needed, order of parameters is confusing
 
 ### Done
 
@@ -168,6 +168,17 @@ Video Frame,License Plate,Confidence
   5K resolution is overkill, you'll achieve better results getting closer to the license plates instead
 
 ## References
+
+Attempt to reduce output from openCV, I'm getting lots of detection logs
+```
+0: 384x640 1 license_plate, 46.4ms
+Speed: 2.4ms preprocess, 46.4ms inference, 0.7ms postprocess per image at shape (1, 3, 384, 640)
+```
+Looked into setting environment variables, these should control output: https://docs.opencv.org/4.x/d6/dea/tutorial_env_reference.html
+See also
+https://stackoverflow.com/questions/69269745/enable-opencv-ffmpeg-logging
+https://stackoverflow.com/questions/54828885/how-to-enable-logging-for-opencv
+But so far couldn't block those detection messages (maybe that's OCR output and not OpenCV output?)
 
 Source for original version of this code found in this article (see _main.py in this project for reference): 
 https://medium.com/@mahijain9211/license-plate-detection-from-video-files-using-yolo-and-easyocr-6b647f0c94d5

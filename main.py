@@ -21,6 +21,11 @@ parser.add_argument("outVideoFile", nargs='?', default="output.mp4")
 parser.add_argument("outCsvFile", nargs='?', default="output.csv")
 args=parser.parse_args()
 
+# attempt to remove logging from openCV
+#export OPENCV_LOG_LEVEL=OFF
+os.environ["OPENCV_LOG_LEVEL"] = "OFF"
+os.environ["OPENCV_VIDEOIO_DEBUG"] = "0"
+
 # create output folder when needed
 if not os.path.exists(args.outputPath):
     print(f"OUTPUT: output folder created {args.outputPath}")
@@ -147,11 +152,11 @@ while cap.isOpened():
                 )
 
                 # OPTION: collect results
-                if( not np.isnan(number_conf) and number_conf > args.confidenceLimit ):
+                if not np.isnan(number_conf) and number_conf > args.confidenceLimit :
                     plates.append([frame_count, concat_number, f"{number_conf:.2f}"])
 
                 # OPTION: also store frames with detection as image
-                if( args.exportFrames == 1 and number_conf > args.confidenceLimit ):
+                if args.exportFrames == 1 and number_conf > args.confidenceLimit :
                     cv2.imwrite(f"{args.outputPath}/frame-{frame_count}.JPG", frame)
 
             except Exception as e:
