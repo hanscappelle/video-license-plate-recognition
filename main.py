@@ -78,101 +78,7 @@ if frame_skip > 1:
     print(f"VIDEO: skipping every {args.skipFrames} frames")
 
 # collect results
-plates = []
-
-while cap.isOpened():
-
-    ret, frame = cap.read()  # Read a frame from the video
-    if not ret:
-        break  # Exit loop if there are no frames left
-
-    print(f"DETECTION: handle frame of frames {frame_count}/{total_frame_count}")
-
-    # Skip frames
-    if frame_count % frame_skip != 0:
-        frame_count += 1
-        continue  # Skip processing this frame
-
-    if shouldResize == 1:
-        # Resize the frame (optional, adjust size as needed)
-        frame = cv2.resize(frame, (resHorizontal, resVertical))  # Resize to 640x480
-
-    if args.rotate180 == 1:
-        # Optional: rotate 180
-        frame = cv2.rotate(frame, cv2.ROTATE_180)
-
-    # Make predictions on the current frame
-    results = model.predict(source=frame)
-
-    # Iterate over results and draw predictions
-    for result in results:
-        boxes = result.boxes  # Get the boxes predicted by the model
-        for box in boxes:
-            class_id = int(box.cls)  # Get the class ID
-            confidence = box.conf.item()  # Get confidence score
-            coordinates = box.xyxy[0]  # Get box coordinates as a tensor
-
-            # Extract and convert box coordinates to integers
-            x1, y1, x2, y2 = map(int, coordinates.tolist())  # Convert tensor to list and then to int
-
-            # Draw the box on the frame
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)  # Draw rectangle
-            
-            # Try to apply OCR on detected region
-            try:
-                # Ensure coordinates are within frame bounds
-                r0 = max(0, x1)
-                r1 = max(0, y1)
-                r2 = min(frame.shape[1], x2)
-                r3 = min(frame.shape[0], y2)
-
-                # Crop license plate region
-                plate_region = frame[r1:r3, r0:r2]
-
-                # Convert to format compatible with EasyOCR
-                plate_image = Image.fromarray(cv2.cvtColor(plate_region, cv2.COLOR_BGR2RGB))
-                plate_array = np.array(plate_image)
-
-                # Use EasyOCR to read text from plate, no limit on characters
-                #plate_number = reader.readtext(plate_array)
-                # using allowlist to limit characters in output
-                plate_number = reader.readtext(plate_array, allowlist="0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-                concat_number = ' '.join([number[1] for number in plate_number])
-                number_conf = np.mean([number[2] for number in plate_number])
-
-                # Draw the detected text on the frame
-                cv2.putText(
-                    img=frame,
-                    text=f"[{concat_number}]({number_conf:.2f})",
-                    org=(r0, r1 - 10),
-                    fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=0.7,
-                    color=(0, 0, 255),
-                    thickness=2
-                )
-
-                # OPTION: collect results
-                if not np.isnan(number_conf) and number_conf > args.confidenceLimit :
-                    plates.append([frame_count, concat_number, f"{number_conf:.2f}"])
-
-                # OPTION: also store frames with detection as image
-                if args.exportFrames == 1 and number_conf > args.confidenceLimit :
-                    cv2.imwrite(f"{args.outputPath}/frame-{frame_count}.JPG", frame)
-
-            except Exception as e:
-                print(f"OCR: Error: {e}")
-                pass
-
-    # Show the frame with detections
-    cv2.imshow("Detections", frame)
-
-    # Write the frame to the output video (optional)
-    out.write(frame)
-    
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break  # Exit loop if 'q' is pressed
-
-    frame_count += 1  # Increment frame count
+#plates = []
 
 # OPTION: for text (csv) based output
 outputCsvFile = f"{args.outputPath}/{args.outCsvFile}"
@@ -181,7 +87,104 @@ with open(outputCsvFile, 'w', newline='') as csvfile:
     csvwriter = csv.writer(csvfile, delimiter=',')#, quotechar='', quoting=csv.QUOTE_MINIMAL)
     # create some heading
     csvwriter.writerow(["Video Frame","License Plate","Confidence"])
-    csvwriter.writerows(plates)
+
+    while cap.isOpened():
+
+        ret, frame = cap.read()  # Read a frame from the video
+        if not ret:
+            break  # Exit loop if there are no frames left
+
+        # Skip frames
+        if frame_count % frame_skip != 0:
+            frame_count += 1
+            #print(f"DETECTION: skip frame of frames {frame_count}/{total_frame_count}")
+            continue  # Skip processing this frame
+
+        print(f"DETECTION: handle frame of frames {frame_count}/{total_frame_count}")
+
+        if shouldResize == 1:
+            # Resize the frame (optional, adjust size as needed)
+            frame = cv2.resize(frame, (resHorizontal, resVertical))  # Resize to 640x480
+
+        if args.rotate180 == 1:
+            # Optional: rotate 180
+            frame = cv2.rotate(frame, cv2.ROTATE_180)
+
+        # Make predictions on the current frame
+        results = model.predict(source=frame)
+
+        # Iterate over results and draw predictions
+        for result in results:
+            boxes = result.boxes  # Get the boxes predicted by the model
+            for box in boxes:
+                class_id = int(box.cls)  # Get the class ID
+                confidence = box.conf.item()  # Get confidence score
+                coordinates = box.xyxy[0]  # Get box coordinates as a tensor
+
+                # Extract and convert box coordinates to integers
+                x1, y1, x2, y2 = map(int, coordinates.tolist())  # Convert tensor to list and then to int
+
+                # Draw the box on the frame
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)  # Draw rectangle
+
+                # Try to apply OCR on detected region
+                try:
+                    # Ensure coordinates are within frame bounds
+                    r0 = max(0, x1)
+                    r1 = max(0, y1)
+                    r2 = min(frame.shape[1], x2)
+                    r3 = min(frame.shape[0], y2)
+
+                    # Crop license plate region
+                    plate_region = frame[r1:r3, r0:r2]
+
+                    # Convert to format compatible with EasyOCR
+                    plate_image = Image.fromarray(cv2.cvtColor(plate_region, cv2.COLOR_BGR2RGB))
+                    plate_array = np.array(plate_image)
+
+                    # Use EasyOCR to read text from plate, no limit on characters
+                    #plate_number = reader.readtext(plate_array)
+                    # using allowlist to limit characters in output
+                    plate_number = reader.readtext(plate_array, allowlist="0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                    concat_number = ' '.join([number[1] for number in plate_number])
+                    number_conf = np.mean([number[2] for number in plate_number])
+
+                    # Draw the detected text on the frame
+                    cv2.putText(
+                        img=frame,
+                        text=f"[{concat_number}]({number_conf:.2f})",
+                        org=(r0, r1 - 10),
+                        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                        fontScale=0.7,
+                        color=(0, 0, 255),
+                        thickness=2
+                    )
+
+                    # OPTION: collect results
+                    if not np.isnan(number_conf) and number_conf > args.confidenceLimit :
+                        csvOutput = [frame_count, concat_number, f"{number_conf:.2f}"]
+                        #plates.append(csvOutput)
+                        # write line
+                        csvwriter.writerow(csvOutput)
+
+                    # OPTION: also store frames with detection as image
+                    if args.exportFrames == 1 and number_conf > args.confidenceLimit :
+                        cv2.imwrite(f"{args.outputPath}/frame-{frame_count}.JPG", frame)
+
+                except Exception as e:
+                    print(f"OCR: Error: {e}")
+                    pass
+
+        # Show the frame with detections
+        cv2.imshow("Detections", frame)
+
+        # Write the frame to the output video (optional)
+        out.write(frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break  # Exit loop if 'q' is pressed
+
+        frame_count += 1  # Increment frame count
 
 # Release resources
 cap.release()

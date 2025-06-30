@@ -148,7 +148,6 @@ Video Frame,License Plate,Confidence
 ## Improvements
 
 * option to start at a specific frame to resume processing
-* => don't wait till the end to export csv text based results
 * improve models? For license plate and for OCR (seem to perform OK)
 * better way of configuration needed, order of parameters is confusing
 
@@ -166,6 +165,7 @@ Video Frame,License Plate,Confidence
 * it probably doesn't help that my source video was anamorphic and desqueezed, tested with normal lens & 5K, 
   5K resolution is overkill, you'll achieve better results getting closer to the license plates instead
 * show progress in output (instead), frame X of Y
+* don't wait till the end to export csv text based results
 
 ## References
 
